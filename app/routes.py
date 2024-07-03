@@ -168,7 +168,7 @@ def create_transaction():
         return jsonify({"message": "Transaction added successfully"}), 200
 
     except ValidationError as e:
-        return jsonify({'error': 'Validation error', 'details': e.errors()}), 400
+        return jsonify({'error': str(e)}), 400
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
