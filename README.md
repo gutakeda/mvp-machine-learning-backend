@@ -68,6 +68,14 @@ YourExpenses Backend é a parte do servidor do aplicativo YourExpenses, respons�
    python run.py
    ```
 
+## Swagger
+
+1. Para ter acesso aos detalhes das APIs, basta seguir os passos anteriores para rodar a aplicação e em seguida acessar o swagger pela rota:
+   ```
+   http://localhost:5000/apidocs/
+   ```
+
+
 ## Licença
 
 Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE.md](LICENSE.md) para mais detalhes.
