@@ -1,5 +1,5 @@
 from typing import List
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel
 from decimal import Decimal
 from enum import Enum
 
@@ -8,29 +8,32 @@ class TransactionType(str, Enum):
     DEPOSIT = 'deposit'
 
 class TransactionSchema(BaseModel):
-    title: str
-    type: TransactionType
-    amount: Decimal = Field(..., gt=0, decimal_places=2)
-    category_id: int
-
-    @field_validator('title')
-    def title_must_not_be_empty(cls, v):
-        if not v.strip():
-            raise ValueError('Title must not be empty')
-        return v
-
-    @field_validator('type')
-    def type_must_be_valid(cls, v):
-        if v not in TransactionType._value2member_map_:
-            raise ValueError('Type must be either "withdraw" or "deposit"')
-        return v
+    age: int
+    sex: int
+    chest_pain_type : int
+    resting_bp : int
+    cholesterol : int
+    fasting_bs : int
+    resting_ecg : int
+    max_hr : int
+    exercise_angina : int
+    oldpeak : int
+    st_slope: int
 
 class TransactionViewSchema(BaseModel):
     id: int
-    title: str
-    type: TransactionType
-    amount: Decimal
-    category_id: int
+    age: int
+    sex: int
+    chest_pain_type : int
+    resting_bp : int
+    cholesterol : int
+    fasting_bs : int
+    resting_ecg : int
+    max_hr : int
+    exercise_angina : int
+    oldpeak : int
+    st_slope: int
+    heart_disease: int
     created_at: str
 
 class TransactionListResponse(BaseModel):

@@ -1,6 +1,6 @@
-# YourExpenses Backend
+# HeartDisease Predictor Backend
 
-YourExpenses Backend é a parte do servidor do aplicativo YourExpenses, responsável por fornecer as APIs necessárias para gerenciar transações e categorias, bem como para calcular e fornecer dados para as tabelas e dashboard.
+HeartDisease Predictor Backend é a parte do servidor do aplicativo, responsável por fornecer as APIs necessárias para gerenciar transações, bem como para calcular e fornecer dados para as tabelas e dashboard.
 
 ## Funcionalidades
 
@@ -46,8 +46,8 @@ YourExpenses Backend é a parte do servidor do aplicativo YourExpenses, respons�
 1. Clone este repositório:
 
    ```bash
-   git clone https://github.com/gutakeda/mvp-fullstack-backend.git
-   cd mvp-fullstack-backend
+   git clone https://github.com/gutakeda/mvp-machine-learning-backend.git
+   cd mvp-machine-learning-backend
    ```
 
 2. Crie e ative um ambiente virtual:
@@ -82,4 +82,4 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE.md](L
 
 ---
 
-Esperamos que você aproveite o uso do YourExpenses para organizar suas finanças de maneira mais eficiente!
+Esperamos que você aproveite o uso do HeartDisease Predictor para testar o modelo de predição de doenças cardiacas.

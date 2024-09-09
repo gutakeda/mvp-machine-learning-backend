@@ -2,9 +2,7 @@ from flask import jsonify, request
 from flask_openapi3 import APIBlueprint
 from flasgger import  swag_from
 from pydantic import ValidationError
-from models.category import Category
 from models.transaction import Transaction
-from schemas.category import CategoryViewSchema, CategoriesListResponse
 from schemas.transaction import TransactionSchema, TransactionListResponse, TransactionDelSchema
 from app import db
 
@@ -68,12 +66,19 @@ def list_transactions():
         transactions_list = [
             {
                 'id': transaction.id,
-                'title': transaction.title,
-                'type': transaction.type,
-                'amount': float(transaction.amount),
-                'category_id': transaction.category_id,
+                'age': transaction.age,
+                'sex': transaction.sex,
+                'chest_pain_type': transaction.chest_pain_type,
+                'resting_bp': transaction.resting_bp,
+                'cholesterol': transaction.cholesterol,
+                'fasting_bs': transaction.fasting_bs,
+                'resting_ecg': transaction.resting_ecg,
+                'max_hr': transaction.max_hr,
+                'exercise_angina': transaction.exercise_angina,
+                'oldpeak': transaction.oldpeak,
+                'st_slope': transaction.st_slope,
+                'heart_disease': transaction.heart_disease,
                 'created_at': transaction.created_at,
-                'category': transaction.category.name,
             } for transaction in transactions
         ]
 
@@ -93,32 +98,70 @@ def list_transactions():
             'in': 'body',
             'required': True,
             'schema': {
-                'type': 'object',
-                'properties': {
-                    'title': {
-                        'type': 'string',
-                        'description': 'Title of the transaction',
-                        'example': 'Grocery shopping'
+                    'type': 'object',
+                    'properties': {
+                        'age': {
+                            'type': 'integer',
+                            'description': 'Age of the person involved in the transaction',
+                            'example': 45
+                        },
+                        'sex': {
+                            'type': 'integer',
+                            'description': 'Sex of the person involved in the transaction',
+                            'example': 1
+                        },
+                        'chest_pain_type': {
+                            'type': 'integer',
+                            'description': 'Type of chest pain experienced',
+                            'example': 1,
+                        },
+                        'resting_bp': {
+                            'type': 'integer',
+                            'description': 'Resting blood pressure in mm Hg',
+                            'example': 130
+                        },
+                        'cholesterol': {
+                            'type': 'integer',
+                            'description': 'Serum cholesterol in mg/dl',
+                            'example': 233
+                        },
+                        'fasting_bs': {
+                            'type': 'integer',
+                            'description': 'Fasting blood sugar > 120 mg/dl (1 = true; 0 = false)',
+                            'example': 1
+                        },
+                        'resting_ecg': {
+                            'type': 'integer',
+                            'description': 'Resting electrocardiographic results',
+                            'example': 1,
+                        },
+                        'max_hr': {
+                            'type': 'integer',
+                            'description': 'Maximum heart rate achieved',
+                            'example': 150
+                        },
+                        'exercise_angina': {
+                            'type': 'integer',
+                            'description': 'Exercise induced angina (Y = Yes; N = No)',
+                            'example':  1,
+                        },
+                        'oldpeak': {
+                            'type': 'integer',
+                            'description': 'ST depression induced by exercise relative to rest',
+                            'example': 1
+                        },
+                        'st_slope': {
+                            'type': 'integer',
+                            'description': 'The slope of the peak exercise ST segment',
+                            'example': 1,
+                        }
                     },
-                    'type': {
-                        'type': 'string',
-                        'description': 'Type of the transaction (\'withdraw\' or \'deposit\')',
-                        'example': 'withdraw'
-                    },
-                    'amount': {
-                        'type': 'number',
-                        'format': 'decimal',
-                        'description': 'Amount of the transaction',
-                        'example': 50.75
-                    },
-                    'category_id': {
-                        'type': 'integer',
-                        'description': 'ID of the category',
-                        'example': 1
-                    }
-                },
-                'required': ['title', 'type', 'amount', 'category_id']
-            }
+                    'required': [
+                        'age', 'sex', 'chest_pain_type', 'resting_bp', 'cholesterol',
+                        'fasting_bs', 'resting_ecg', 'max_hr', 'exercise_angina',
+                        'oldpeak', 'st_slope'
+                    ]
+                }
         }
     ],
     'responses': {
@@ -229,131 +272,5 @@ def delete_transaction(path: TransactionDelSchema):
         db.session.commit()
         return jsonify({'message': 'Transaction successfully deleted'}), 200
 
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@api.get('/categories', responses={"200": CategoriesListResponse})
-def list_categories():
-    """
-    List categories with total amounts.
-
-    This endpoint retrieves all categories and calculates the total amount for each category.
-
-    ---
-    tags:
-        - Category
-    responses:
-      200:
-        description: A list of categories with total amounts
-        content:
-          application/json:
-            schema: CategoriesListResponse
-      500:
-        description: Internal server error
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                error:
-                  type: string
-    """
-    try:
-        categories = Category.query.all()
-        categories_list = []
-
-        for category in categories:
-            # Calculate total amount for each category
-            transactions = Transaction.query.filter_by(category_id=category.id).all()
-            total_amount = 0
-            for transaction in transactions:
-                if transaction.type == 'withdraw':
-                    total_amount -= transaction.amount
-                elif transaction.type == 'deposit':
-                    total_amount += transaction.amount
-
-            category_data = {
-                'id': category.id,
-                'name': category.name,
-                'total_amount': total_amount
-            }
-            categories_list.append(category_data)
-        return jsonify(categories_list), 200
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@api.post('/category', responses={"200": CategoryViewSchema})
-@swag_from({
-    'summary': 'Creates category.',
-    'description': 'This endpoint creates a new category.',
-    'tags': ['Category'],
-    'parameters': [
-        {
-            'name': 'body',
-            'in': 'body',
-            'required': True,
-            'schema': {
-                'type': 'object',
-                'properties': {
-                    'name': {
-                        'type': 'string',
-                        'description': 'Name of the category',
-                        'example': 'Food'
-                    }
-                },
-                'required': ['name']
-            }
-        }
-    ],
-    'responses': {
-        '200': {
-            'description': 'Category created successfully',
-            'schema': {
-                'type': 'object',
-                'properties': {
-                    'message': {
-                        'type': 'string'
-                    }
-                }
-            }
-        },
-        '400': {
-            'description': 'Missing name parameter',
-            'schema': {
-                'type': 'object',
-                'properties': {
-                    'error': {
-                        'type': 'string'
-                    }
-                }
-            }
-        },
-        '500': {
-            'description': 'Internal server error',
-            'schema': {
-                'type': 'object',
-                'properties': {
-                    'error': {
-                        'type': 'string'
-                    }
-                }
-            }
-        }
-    }
-})
-def create_category():
-    data = request.get_json()
-
-    if 'name' not in data:
-        return jsonify({'error': 'Missing name parameter'}), 400
-
-    name = data['name']
-    new_category = Category(name=name)
-
-    try:
-        db.session.add(new_category)
-        db.session.commit()
-        return jsonify({'message': 'Category created successfully'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
