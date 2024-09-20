@@ -19,8 +19,8 @@ HeartDisease Predictor Backend é a parte do servidor do aplicativo, responsáve
 1. Clone este repositório:
 
    ```bash
-   git clone https://github.com/gutakeda/mvp-fullstack-backend.git
-   cd mvp-fullstack-backend
+   git clone https://github.com/gutakeda/mvp-machine-learning-backend
+   cd mvp-machine-learning-backend
    ```
 
 2. Crie e ative um ambiente virtual:
@@ -46,7 +46,7 @@ HeartDisease Predictor Backend é a parte do servidor do aplicativo, responsáve
 1. Clone este repositório:
 
    ```bash
-   git clone https://github.com/gutakeda/mvp-machine-learning-backend.git
+   git clone https://github.com/gutakeda/mvp-machine-learning-backend
    cd mvp-machine-learning-backend
    ```
 
