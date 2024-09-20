@@ -1,10 +1,17 @@
+import json
+import os
 from flask import jsonify, request
 from flask_openapi3 import APIBlueprint
 from flasgger import  swag_from
+from models.pipeline import Pipeline
+from models.preprocessador import PreProcessador
 from pydantic import ValidationError
 from models.transaction import Transaction
-from schemas.transaction import TransactionSchema, TransactionListResponse, TransactionDelSchema
+from schemas.transaction import MappingDictSchema, TransactionSchema, TransactionListResponse, TransactionDelSchema
 from app import db
+
+pipeline = Pipeline()
+preprocessador = PreProcessador()
 
 api = APIBlueprint('api', __name__, url_prefix='/api')
 
@@ -202,10 +209,18 @@ def list_transactions():
 })
 def create_transaction():
     data = request.get_json()
+
+    # Preparando os dados para o pipeline
+    X_input = PreProcessador.preparar_form(data)
+    # Carregando pipeline
+    pipeline_path = './machine-learning/pipelines/knn_norm.pkl'
+    pipeline = Pipeline.carrega_pipeline(pipeline_path)
+    heart_disease = int(Pipeline.preditor(pipeline, X_input)[0])
+
     try:
         # Validate through TransactionSchema
         transaction_data = TransactionSchema(**data)
-        transaction = Transaction(**transaction_data.model_dump())
+        transaction = Transaction(**transaction_data.model_dump(), heart_disease=heart_disease)
         db.session.add(transaction)
         db.session.commit()
         return jsonify({"message": "Transaction added successfully"}), 200
@@ -271,6 +286,45 @@ def delete_transaction(path: TransactionDelSchema):
         db.session.delete(transaction)
         db.session.commit()
         return jsonify({'message': 'Transaction successfully deleted'}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@api.get('/mapping',responses={200: MappingDictSchema})
+def get_mapping():
+    """
+    Get the mapping dictionary for text-to-numeric transformation.
+
+    This endpoint retrieves the mapping dictionary used for transforming text values into numeric values.
+
+    ---
+    tags:
+        - Mapping
+    responses:
+      200:
+        description: Mapping dictionary
+        content:
+          application/json:
+            schema:
+              type: object
+      500:
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+    """
+    try:
+        current_dir = os.path.dirname(__file__)
+        mapping_dict_path = os.path.join(current_dir, 'mapping_dict.json')
+        # Carrega o dicionario do arquivo json
+        with open(mapping_dict_path, 'r') as file:
+            mapping_dict = json.load(file)
+
+        return jsonify(mapping_dict), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500

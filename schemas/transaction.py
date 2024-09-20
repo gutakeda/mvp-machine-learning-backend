@@ -1,11 +1,7 @@
-from typing import List
+from typing import Dict, List, Any
 from pydantic import BaseModel
 from decimal import Decimal
 from enum import Enum
-
-class TransactionType(str, Enum):
-    WITHDRAW = 'withdraw'
-    DEPOSIT = 'deposit'
 
 class TransactionSchema(BaseModel):
     age: int
@@ -41,3 +37,7 @@ class TransactionListResponse(BaseModel):
 
 class TransactionDelSchema(BaseModel):
     transaction_id: int
+
+class MappingDictSchema(BaseModel):
+    field: str
+    mapping: Dict[str, Any]
