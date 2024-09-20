@@ -3,8 +3,8 @@ from models.carregador import Carregador
 from models.pipeline import Pipeline
 
 
-# Para rodar: pytest -v test_modelos.py
-# Para rodar na versão do python do venv: python -m pytest -v test_modelos.py
+# Para rodar: pytest -v test_modelos.py -s
+# Para rodar na versão do python do venv: python -m pytest -v test_modelos.py -s
 
 # Instanciação das Classes
 carregador = Carregador()
@@ -50,13 +50,13 @@ def test_pipeline_knn_padr():
 
 # Método para testar pipeline NB padronizado a partir do arquivo correspondente
 def test_pipeline_nb_padr():
-    # Importando pipeline de NB padronizado
-    path = './machine-learning/pipelines/nb_padr.pkl'
+    # Importando pipeline de SVM padronizado
+    path = './machine-learning/pipelines/svm_padr.pkl'
 
     pipeline = Pipeline.carrega_pipeline(path)
 
-    # Obtendo as métricas do NB
+    # Obtendo as métricas do SVM
     acuracia = Avaliador.avaliar(pipeline, X, y)
-    print(acuracia, "nb-padr")
+    print(acuracia, "svm-padr")
 
     assert acuracia >= 0.78
