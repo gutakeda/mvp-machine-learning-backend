@@ -13,7 +13,7 @@ class TransactionSchema(BaseModel):
     resting_ecg : int
     max_hr : int
     exercise_angina : int
-    oldpeak : int
+    oldpeak : float
     st_slope: int
 
 class TransactionViewSchema(BaseModel):
@@ -27,7 +27,7 @@ class TransactionViewSchema(BaseModel):
     resting_ecg : int
     max_hr : int
     exercise_angina : int
-    oldpeak : int
+    oldpeak : float
     st_slope: int
     heart_disease: int
     created_at: str

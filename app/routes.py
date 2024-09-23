@@ -213,7 +213,7 @@ def create_transaction():
     # Preparando os dados para o pipeline
     X_input = PreProcessador.preparar_form(data)
     # Carregando pipeline
-    pipeline_path = './machine-learning/pipelines/knn_norm.pkl'
+    pipeline_path = './machine-learning/pipelines/svm_norm.pkl'
     pipeline = Pipeline.carrega_pipeline(pipeline_path)
     heart_disease = int(Pipeline.preditor(pipeline, X_input)[0])
 
