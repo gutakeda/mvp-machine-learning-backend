@@ -75,6 +75,17 @@ HeartDisease Predictor Backend é a parte do servidor do aplicativo, responsáve
    http://localhost:5000/apidocs/
    ```
 
+## Testes
+
+1. Para rodar os testes com informação da acurácia:
+   ```
+   pytest -v test_modelos.py -s
+   ```
+
+   Para rodar os testes na versão do python do venv com informação da acurácia:
+   ```
+   python -m pytest -v test_modelos.py -s
+   ```
 
 ## Licença
 
